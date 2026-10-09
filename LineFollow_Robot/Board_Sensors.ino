@@ -80,6 +80,7 @@ void UseMPU() {
 }
 
 void TransmitData() {
+  
 }
 
 //To start a component, name component

@@ -25,14 +25,13 @@ int GetRightLine() {
 
 //The check and movement logic
 void RunSteering() {
-  //If it doesn't detect anything, don't do anything
-  if (!GetCentreLine() && !GetLeftLine() && !GetRightLine()) { 
-    SetMovement(0,0); 
-  } else if (GetLeftLine() && !GetRightLine()) {
+  if (GetLeftLine() && !GetRightLine()) {
     SetMovement(0,1); //If left is triggered, go left
   } else if (GetRightLine() & !GetLeftLine()) {
     SetMovement(1,0); //If right is triggered, go right
   } else if (GetCentreLine()) { 
     SetMovement(1,1); //If the centre sensor is on the line (and neither of the others happened), just keep going
+  } else {
+    SetMovement(0,0); //If anything else (nothing, or some weird unexpected combo), don't do anything
   }
 }

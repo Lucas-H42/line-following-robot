@@ -17,34 +17,24 @@ void SetupWheels() {
 }
 
 void SetMovement(int lWheel, int rWheel) {
-  if (lWheel > 0) 
-  {
+  if (lWheel > 0) {
     digitalWrite(L_BACK, LOW);
     digitalWrite(L_FORWARD, HIGH);
-  } 
-  else if (lWheel < 0) 
-  {
+  } else if (lWheel < 0) {
     digitalWrite(L_FORWARD, LOW);
     digitalWrite(L_BACK, HIGH);
-  } 
-  else if (lWheel == 0) 
-  {
+  } else if (lWheel == 0) {
     digitalWrite(L_FORWARD, LOW);
     digitalWrite(L_BACK, LOW);
   }
 
-  if (rWheel > 0) 
-  {
+  if (rWheel > 0) {
     digitalWrite(R_BACK, LOW);
     digitalWrite(R_FORWARD, HIGH);
-  } 
-  else if (rWheel < 0) 
-  {
+  } else if (rWheel < 0) {
     digitalWrite(R_FORWARD, LOW);
     digitalWrite(R_BACK, HIGH);
-  } 
-  else if (rWheel == 0) 
-  {
+  } else if (rWheel == 0) {
     digitalWrite(R_FORWARD, LOW);
     digitalWrite(R_BACK, LOW);
   }

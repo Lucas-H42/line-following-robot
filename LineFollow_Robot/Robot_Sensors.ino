@@ -23,14 +23,12 @@ int GetRightSensor() {
   return digitalRead(LIGHT_R);
 }
 
-
 //The check and movement logic
 void RunSteering() {
   //If it doesn't detect anything, don't do anything
-  if (!GetCentreSensor() && !GetLeftSensor() && !GetRightSensor()) 
-  { SetMovement(0,0); }
-
-  if (GetLeftSensor() && !GetRightSensor()) {
+  if (!GetCentreSensor() && !GetLeftSensor() && !GetRightSensor()) { 
+    SetMovement(0,0); 
+  } else if (GetLeftSensor() && !GetRightSensor()) {
     SetMovement(0,1); //If left is triggered, go left
   } else if (GetRightSensor() & !GetLeftSensor()) {
     SetMovement(1,0); //If right is triggered, go right

@@ -63,6 +63,5 @@ void loop() {
   Serial.print(GetRightSensor());
   Serial.println();
   
-  //RunSteering();
-  SetMovement(1,1);
+  RunSteering();
 }

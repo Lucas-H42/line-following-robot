@@ -13,26 +13,26 @@ void SetupRobotSensors() {
   pinMode(SONIC_ECHO, INPUT);
 }
 
-int GetLeftSensor() {
-  return digitalRead(LIGHT_L);
+int GetLeftLine() {
+  return !digitalRead(LIGHT_L);
 }
-int GetCentreSensor() {
-  return digitalRead(LIGHT_C);
+int GetCentreLine() {
+  return !digitalRead(LIGHT_C);
 }
-int GetRightSensor() {
-  return digitalRead(LIGHT_R);
+int GetRightLine() {
+  return !digitalRead(LIGHT_R);
 }
 
 //The check and movement logic
 void RunSteering() {
   //If it doesn't detect anything, don't do anything
-  if (!GetCentreSensor() && !GetLeftSensor() && !GetRightSensor()) { 
+  if (!GetCentreLine() && !GetLeftLine() && !GetRightLine()) { 
     SetMovement(0,0); 
-  } else if (GetLeftSensor() && !GetRightSensor()) {
+  } else if (GetLeftLine() && !GetRightLine()) {
     SetMovement(0,1); //If left is triggered, go left
-  } else if (GetRightSensor() & !GetLeftSensor()) {
+  } else if (GetRightLine() & !GetLeftLine()) {
     SetMovement(1,0); //If right is triggered, go right
-  } else if (GetCentreSensor()) { 
+  } else if (GetCentreLine()) { 
     SetMovement(1,1); //If the centre sensor is on the line (and neither of the others happened), just keep going
   }
 }

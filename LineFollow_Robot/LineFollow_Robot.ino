@@ -54,13 +54,13 @@ void loop() {
 
   //SensorTestCycle();
   Serial.print("LeftLight:");
-  Serial.print(GetLeftSensor());
+  Serial.print(GetLeftLine());
   Serial.print(",");
   Serial.print("CentreLight:");
-  Serial.print(GetCentreSensor());
+  Serial.print(GetCentreLine());
   Serial.print(",");
   Serial.print("RightLight:");
-  Serial.print(GetRightSensor());
+  Serial.print(GetRightLine());
   Serial.println();
   
   RunSteering();

@@ -20,10 +20,10 @@ void setup() {
   //Setup Serial communication
   Serial.begin(9600);
   int serialCount = 1;
-  while (!Serial) {
-    delay(TEST_DELAY);
-    serialCount++;
-  }
+  // while (!Serial) {
+  //   delay(TEST_DELAY);
+  //   serialCount++;
+  // }
   Serial.println("Board OKAY");
   Serial.print("Tried ");
   Serial.print(serialCount);

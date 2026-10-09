@@ -1,3 +1,19 @@
+#include <Arduino.h>
+
+auto& TrueSerial = Serial;
+class DummySerial {
+public:
+  void begin(unsigned long) {}
+  template<typename T, typename... Args> void print(T, Args...) {}
+  template<typename T, typename... Args> void println(T, Args...) {}
+  operator bool() { return false; }
+};
+DummySerial NukedSerial;
+bool serialConnected = true;
+#define Serial (serialConnected ? TrueSerial : NukedSerial)
+
+#define SERIAL_INDICATOR PA10
+
 const int TEST_DELAY = 50;
 const int LOOP_DELAY = 1000;
 
@@ -17,12 +33,24 @@ void setup() {
     - send ready msg
   */
 
+  pinMode(SERIAL_INDICATOR, OUTPUT);
+
   //Setup Serial communication
   Serial.begin(9600);
   int serialCount = 1;
   while (!Serial) {
     delay(TEST_DELAY);
     serialCount++;
+    //If the serial tester reaches a certain threshold, call it a day and nuke the Serial class
+    if (serialCount > 1000) {
+      serialConnected = false;
+      for (int i = 0; i < 3; i++) {
+        digitalWrite(SERIAL_INDICATOR, HIGH);
+        delay(500);
+        digitalWrite(SERIAL_INDICATOR, LOW);
+        delay(500);
+      }
+    }
   }
   Serial.println("Board OKAY");
   Serial.print("Tried ");

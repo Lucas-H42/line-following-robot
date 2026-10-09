@@ -1,5 +1,4 @@
 //The libraries for sensor and transmitter components
-#include <Arduino.h>
 #include <TinyGPSPlus.h>
 #include <MPU6050_light.h>
 #include <BMP180I2C.h>

@@ -20,11 +20,10 @@ To upload your code:
 4. In the Tools menu, ensure that _Board part number_ is set to "Generic F405RGTx", and _Upload method_ is set to "STM32CubeProgrammer (DFU)"
 5. Upload your code as usual
 
-Then, if you want to have any kind of Serial communication between your board and computer, do the following:
+Then, to actually run the code (annoying, I know):
 
-1. Ensure that, in the Tools menu, _USB Support_ is set to "CDC (generic 'Serial')" or equivalent
+1. Ensure that, in the Tools menu, _USB Support_ is set to "CDC (generic 'Serial')" or equivalent (if you want to have Serial communication or similar)
 2. After uploading your code, disconnect your board from your computer
 3. Disconnect the BOOT0 pin from the 3.3V pin
 4. Reconnect the board to your computer
 5. Under the Select Board menu, choose the option containing "usbmodem..." followed by a string of numbers
-6. Open the Serial Monitor/Serial Plotter/whatever.

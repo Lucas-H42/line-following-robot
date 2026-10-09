@@ -4,6 +4,8 @@
 #define SONIC_TRIG PA6
 #define SONIC_ECHO PA7
 
+int MAXSEARCH = 50;
+
 void SetupRobotSensors() {
   pinMode(LIGHT_L, INPUT);
   pinMode(LIGHT_C, INPUT);
@@ -32,6 +34,27 @@ void RunSteering() {
   } else if (GetCentreLine()) { 
     SetMovement(1,1); //If the centre sensor is on the line (and neither of the others happened), just keep going
   } else {
-    SetMovement(0,0); //If anything else (nothing, or some weird unexpected combo), don't do anything
+    LineSearch(); //If anything else (nothing, or some weird unexpected combo), look for a new line
+  }
+}
+
+void LineSearch() {
+  int search = 0;
+  SetMovement(1,-1);
+  while (search < 50 && !GetLeftLine() && !GetCentreLine() && !GetRightLine()) {
+    delay(50);
+    Serial.print("Search count: ");
+    Serial.println(search);
+    search++;
+  }
+  SetMovement(0,0);
+  while (!GetCentreLine()) {
+    if (GetLeftLine()) {
+      SetMovement(-1,1);
+    } else if (GetRightLine()) {
+      SetMovement(1,-1);
+    }
+    delay(10);
+    SetMovement(0,0);
   }
 }

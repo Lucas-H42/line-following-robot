@@ -28,7 +28,7 @@ int GetRightSensor() {
 void RunSteering() {
   //If it's on the line, exit
   if (GetCentreSensor() && !GetLeftSensor() && !GetRightSensor()) {
-    SetMovement(1,1);
+    SetMovement(100,100);
   }
 
 }

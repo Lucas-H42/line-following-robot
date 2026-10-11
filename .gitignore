@@ -9,3 +9,12 @@ build/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# PlatformIO temporary build artifacts and libraries
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# CLion / JetBrains IDE internal settings layout
+.idea/
+cmake-build-*/

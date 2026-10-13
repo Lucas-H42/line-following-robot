@@ -18,7 +18,7 @@ void setup() {
   */
 
   //Setup Serial communication
-  Serial.begin(9600);
+  Serial.begin(115200);
   int serialCount = 1;
   // while (!Serial) {
   //   delay(TEST_DELAY);

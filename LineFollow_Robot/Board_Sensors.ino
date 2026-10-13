@@ -4,9 +4,6 @@
 #include <MPU6050_light.h>
 #include <BMP180I2C.h>
 #include <RF24.h>
-#include <RF24_config.h>
-#include <nRF24L01.h>
-#include <printf.h>
 #include "Wire.h"
 
 //Create component objects

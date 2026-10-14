@@ -6,6 +6,8 @@
 #include <RF24.h>
 #include "Wire.h"
 
+const int TEST_DELAY = 50;
+
 //Create component objects
 BMP180I2C barometer(0x77);
 MPU6050 IMU(Wire);
@@ -33,29 +35,25 @@ float accelAngX;
 float accelAngY;
 float accelAngZ;
 
-void SetupBoardSensors() {
-  //Set up MPU6050
-  StartComponent(MPU_ID);
-  Serial.println("Calculating offsets, do not move the board...");
-  delay(1000);
-  IMU.calcOffsets();
-  Serial.println("Calculation complete. MPU6050 initialised successfully.");
+//A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
-  //Set up BMP180
-  Wire.begin();
-  StartComponent(BMP_ID);
-  barometer.resetToDefaults();
-	barometer.setSamplingMode(BMP180MI::MODE_UHR);
-  Serial.println("BMP180 initialised successfully.");
-}
-
-void SensorTestCycle() {
-  Serial.println("Testing cycle: ");
-  UseBMP();
-  //UseMPU();
-  //UseGPS();
-  //TransmitData();
-  Serial.println();
+//Check if the component of the appropriate name has started
+bool IsComponentReady(String componentName) {
+  if (componentName == MPU_ID && IMU.begin()) {
+    return true;
+  }
+  else if (componentName == BMP_ID && barometer.begin()) {
+    return true;
+  }
+  /*else if (componentName == GPS_ID && ) {
+    return true;
+  }
+  else if (componentName == RADIO_ID && ) {
+    return true;
+  }*/
+  else {
+    return false;
+  }
 }
 
 void UseBMP() {
@@ -78,6 +76,16 @@ void UseMPU() {
 
 void TransmitData() {
   
+}
+
+float calcAltitude(int pressurePa) {
+  float hPa = 0;
+  float altitudeFeet = 0;
+  float altitudeMeters = 0;
+  hPa = 0.01 * pressurePa;
+  altitudeFeet = ((1 - pow((hPa / 1013.25), 0.190284)) * 145366.45);
+  altitudeMeters = 0.3048 * altitudeFeet;
+  return(altitudeMeters);
 }
 
 //To start a component, name component
@@ -105,31 +113,27 @@ void StartComponent(String component) {
   Serial.println(" time(s).");
 }
 
-//Check if the component of the appropriate name has started
-bool IsComponentReady(String componentName) {
-  if (componentName == MPU_ID && IMU.begin()) {
-    return true;
-  } 
-  else if (componentName == BMP_ID && barometer.begin()) {
-    return true;
-  }
-  /*else if (componentName == GPS_ID && ) {
-    return true;
-  }
-  else if (componentName == RADIO_ID && ) {
-    return true;
-  }*/
-  else {
-    return false;
-  }
+void SetupBoardSensors() {
+  //Set up MPU6050
+  StartComponent(MPU_ID);
+  Serial.println("Calculating offsets, do not move the board...");
+  delay(1000);
+  IMU.calcOffsets();
+  Serial.println("Calculation complete. MPU6050 initialised successfully.");
+
+  //Set up BMP180
+  Wire.begin();
+  StartComponent(BMP_ID);
+  barometer.resetToDefaults();
+  barometer.setSamplingMode(BMP180MI::MODE_UHR);
+  Serial.println("BMP180 initialised successfully.");
 }
 
-float calcAltitude(int pressurePa) {
-  float hPa = 0;
-  float altitudeFeet = 0;
-  float altitudeMeters = 0;
-  hPa = 0.01 * pressurePa;
-  altitudeFeet = ((1 - pow((hPa / 1013.25), 0.190284)) * 145366.45);
-  altitudeMeters = 0.3048 * altitudeFeet;
-  return(altitudeMeters);
+void SensorTestCycle() {
+  Serial.println("Testing cycle: ");
+  UseBMP();
+  //UseMPU();
+  //UseGPS();
+  //TransmitData();
+  Serial.println();
 }

@@ -29,24 +29,6 @@ int GetRightLine() {
   return !digitalRead(LIGHT_R);
 }
 
-//The check and movement logic
-void RunSteering() {
-  if (GetLeftLine() && !GetRightLine()) {
-    SetMovement(0,1); //If left is triggered, go left
-    hasSearched = false; //If it moves, allow it to search again
-  } else if (GetRightLine() & !GetLeftLine()) {
-    SetMovement(1,0); //If right is triggered, go right
-    hasSearched = false;
-  } else if (GetCentreLine()) { 
-    SetMovement(1,1); //If the centre sensor is on the line (and neither of the others happened), just keep going
-    hasSearched = false;
-  } else if (!hasSearched) {
-    LineSearch(); //If anything else (nothing, or some weird unexpected combo), look for a new line
-  } else {
-    SetMovement(0,0);
-  }
-}
-
 void LineSearch() {
   int search = 0;
   SetMovement(1,-1);
@@ -67,4 +49,22 @@ void LineSearch() {
     SetMovement(0,0);
   }
   hasSearched = true;
+}
+
+//The check and movement logic
+void RunSteering() {
+  if (GetLeftLine() && !GetRightLine()) {
+    SetMovement(0,1); //If left is triggered, go left
+    hasSearched = false; //If it moves, allow it to search again
+  } else if (GetRightLine() & !GetLeftLine()) {
+    SetMovement(1,0); //If right is triggered, go right
+    hasSearched = false;
+  } else if (GetCentreLine()) { 
+    SetMovement(1,1); //If the centre sensor is on the line (and neither of the others happened), just keep going
+    hasSearched = false;
+  } else if (!hasSearched) {
+    LineSearch(); //If anything else (nothing, or some weird unexpected combo), look for a new line
+  } else {
+    SetMovement(0,0);
+  }
 }

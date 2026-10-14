@@ -1,7 +1,5 @@
+#include <Arduino.h>
 #include <RF24.h>
-#include <RF24_config.h>
-#include <nRF24L01.h>
-#include <printf.h>
 
 void setup() {
   // put your setup code here, to run once:

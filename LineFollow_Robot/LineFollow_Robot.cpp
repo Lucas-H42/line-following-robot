@@ -1,4 +1,8 @@
 #include <Arduino.h>
+#include <WSerial.h>
+#include "Wheel_Control.h"
+#include "Robot_Sensors.h"
+#include "Board_Sensors.h"
 
 auto& TrueSerial = Serial;
 class DummySerial {
@@ -22,6 +26,7 @@ Notes for self later:
   - Had to choose between one big .ino, multiple .ino's, and the .h/.cpp stuff
   - Had to make sure I wasn't going to fry the board with 5V in a 3.3V spot
   - Decided to add to git partway through (here)
+  - Migrated to CLion cause I wanted to make my life EVen harder!
 */
 
 void setup() {
@@ -36,7 +41,7 @@ void setup() {
   pinMode(SERIAL_INDICATOR, OUTPUT);
 
   //Setup Serial communication
-  Serial.begin(9600);
+  Serial.begin(115200);
   int serialCount = 1;
   while (!Serial) {
     delay(TEST_DELAY);

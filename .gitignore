@@ -18,3 +18,7 @@ Desktop.ini
 # CLion / JetBrains IDE internal settings layout
 .idea/
 cmake-build-*/
+
+# Dynamic compilation database (IntelliSense)
+compile_commands.json
+**/compile_commands.json

@@ -1,3 +1,6 @@
+#include <Arduino.h>
+#include "Wheel_Control.h"
+
 #define LIGHT_L PA8
 #define LIGHT_C PB1
 #define LIGHT_R PB0

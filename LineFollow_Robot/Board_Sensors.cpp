@@ -5,6 +5,7 @@
 #include <RF24.h>
 #include <TinyGPSPlus.h>
 #include <Wire.h>
+#include "Board_Sensors.h"
 
 constexpr int TEST_DELAY = 50;
 
@@ -16,11 +17,10 @@ MPU6050 imu(Wire);
 
 //Bools to check if things are active???
 //Variables for measurements - all unused ik i should do smth abt that
-float temp;
+float bmpTemp;
 float pressure;
-float velocity;
 float altitude;
-float compassBearing;
+float mpuTemp;
 float angleX;
 float angleY;
 float angleZ;
@@ -40,29 +40,7 @@ float accelAngZ;
 //i probably should do that...
 //ah well, future me problem
 
-void UseBMP() {
-  //Get and print the temperature
-  Serial.print("Temperature(degC):");
-	temp = bmp.readTemperature();
-  Serial.print(temp);
-  Serial.print(",");
-
-  //Get and print the pressure
-  Serial.print("Pressure(hPa):");
-  pressure = bmp.readPressure() / 100;
-  Serial.print(pressure);
-  Serial.print(",");
-}
-
-void UseMPU() {
-
-}
-
-void TransmitData() {
-
-}
-
-float calcAltitude(int pressurePa) {
+float calcAltitude(float pressurePa) {
   float hPa = 0;
   float altitudeFeet = 0;
   float altitudeMeters = 0;
@@ -71,6 +49,38 @@ float calcAltitude(int pressurePa) {
   altitudeMeters = 0.3048 * altitudeFeet;
   return(altitudeMeters);
 }
+
+void UseBMP() {
+  //Get and print the temperature
+  Serial.print("Temperature(degC):");
+	bmpTemp = bmp.readTemperature();
+  Serial.print(bmpTemp);
+  Serial.print(",");
+
+  //Get and print the pressure
+  Serial.print("Pressure(hPa):");
+  pressure = bmp.readPressure() / 100;
+  Serial.print(pressure);
+  Serial.print(",");
+
+  //Get and print the altitude
+  Serial.print("Altitude(m):");
+  altitude = calcAltitude(pressure);
+  Serial.print(altitude);
+  Serial.print(",");
+}
+
+void UseIMU() {
+  imu.update();
+
+  mpuTemp = imu.getTemp();
+
+}
+
+void TransmitData() {
+
+}
+
 
 //Check if the component has started (automatically chooses which setup to use)
 bool IsComponentReady(auto &component) {
@@ -131,7 +141,7 @@ void SetupBoardSensors() {
 void SensorTestCycle() {
   Serial.println("Testing cycle: ");
   UseBMP();
-  //UseMPU();
+  //UseIMU();
   //UseGPS();
   //TransmitData();
   Serial.println();

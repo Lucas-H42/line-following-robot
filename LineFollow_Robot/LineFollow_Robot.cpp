@@ -37,7 +37,7 @@ void setup() {
   Serial.println(" times");
 
   SetupWheels();
-  //SetupBoardSensors();
+  SetupBoardSensors();
   SetupRobotSensors();
 }
 

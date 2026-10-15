@@ -7,6 +7,10 @@
 #define SONIC_TRIG PA6
 #define SONIC_ECHO PA7
 
+float duration;
+float distance;
+const float soundSpeed = 0.0343; //cm per microsecond
+
 void SetupRobotSensors() {
   pinMode(LIGHT_L, INPUT);
   pinMode(LIGHT_C, INPUT);
@@ -34,4 +38,13 @@ void RunSteering() {
     SetMovement(1,1);
   }
 
+}
+
+float GetDistance() {
+  digitalWrite(SONIC_TRIG, LOW);
+  delayMicroseconds(2);
+
+  duration = pulseIn(SONIC_ECHO, HIGH);
+  distance = soundSpeed * duration/2;
+  return distance;
 }

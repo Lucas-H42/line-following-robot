@@ -8,5 +8,6 @@ int GetLeftSensor();
 int GetCentreSensor();
 int GetRightSensor();
 void RunSteering();
+void GetDistance();
 
 #endif

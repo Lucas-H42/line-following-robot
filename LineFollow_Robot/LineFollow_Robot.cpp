@@ -4,8 +4,8 @@
 #include "Robot_Sensors.h"
 #include "Board_Sensors.h"
 
-const int TEST_DELAY = 50;
-const int LOOP_DELAY = 1000;
+constexpr int TEST_DELAY = 50;
+constexpr int LOOP_DELAY = 1000;
 
 /* 
 Notes for self later:

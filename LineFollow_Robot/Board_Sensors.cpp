@@ -1,24 +1,20 @@
 //The libraries for sensor and transmitter components
 #include <Arduino.h>
-#include <TinyGPSPlus.h>
 #include <MPU6050_light.h>
 #include <BMP180I2C.h>
 #include <RF24.h>
-#include "Wire.h"
+#include <TinyGPSPlus.h>
+#include <Wire.h>
 
-const int TEST_DELAY = 50;
+constexpr int TEST_DELAY = 50;
 
 //Create component objects
-BMP180I2C barometer(0x77);
-MPU6050 IMU(Wire);
+BMP180I2C bmp(0x77);
+MPU6050 imu(Wire);
 //SoftwareSerial gpsSerial(PA1, PA0);
-//TingGPSPlus gps;
+//TinyGPSPlus gps;
 
-//Constant variables
-const String BMP_ID = "BMP180";
-const String MPU_ID = "MPU6050";
-const String GPS_ID = "TinyGPS";
-const String RADIO_ID = "RF24";
+//Bools to check if things are active???
 //Variables for measurements
 float temp;
 float pressure;
@@ -37,35 +33,16 @@ float accelAngZ;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
-//Check if the component of the appropriate name has started
-bool IsComponentReady(String componentName) {
-  if (componentName == MPU_ID && IMU.begin()) {
-    return true;
-  }
-  else if (componentName == BMP_ID && barometer.begin()) {
-    return true;
-  }
-  /*else if (componentName == GPS_ID && ) {
-    return true;
-  }
-  else if (componentName == RADIO_ID && ) {
-    return true;
-  }*/
-  else {
-    return false;
-  }
-}
-
 void UseBMP() {
   //Get and print the temperature
   Serial.print("Temperature(degC):");
-	temp = barometer.readTemperature();
+	temp = bmp.readTemperature();
   Serial.print(temp);
   Serial.print(",");
 
   //Get and print the pressure
   Serial.print("Pressure(hPa):");
-  pressure = barometer.readPressure() / 100;
+  pressure = bmp.readPressure() / 100;
   Serial.print(pressure);
   Serial.print(",");
 }
@@ -75,7 +52,7 @@ void UseMPU() {
 }
 
 void TransmitData() {
-  
+
 }
 
 float calcAltitude(int pressurePa) {
@@ -88,12 +65,27 @@ float calcAltitude(int pressurePa) {
   return(altitudeMeters);
 }
 
+//Check if the component has started (automatically chooses which setup to use)
+bool IsComponentReady(auto &component) {
+  return component.begin();
+}
+// Serial is set up in LineFollow_Robot.cpp, so not needed here
+// bool IsComponentReady(HardwareSerial &component) {
+//   component.begin(115200);
+//   return component;
+// }
+// Leave SoftwareSerial off for now, cause do I really need the gps? (Also it clashes with C++20)
+// bool IsComponentReady(SoftwareSerial &component) {
+//   component.begin(9600);
+//   return true;
+// }
+
 //To start a component, name component
-void StartComponent(String component) {
+void StartComponent(auto &component, const String &componentName) {
   //Try test for the first time
   int counter = 1;
   Serial.print("Attempting to start ");
-  Serial.println(component);
+  Serial.println(componentName);
   //If it's not ready
   while (!IsComponentReady(component)) {
     //Test repeatedly, showing an error every 100 tries
@@ -106,7 +98,7 @@ void StartComponent(String component) {
     counter++;
   }
   //When it's ready, show success
-  Serial.print(component);
+  Serial.print(componentName);
   Serial.print(" ready. ");
   Serial.print("Tried ");
   Serial.print(counter);
@@ -115,17 +107,17 @@ void StartComponent(String component) {
 
 void SetupBoardSensors() {
   //Set up MPU6050
-  StartComponent(MPU_ID);
+  StartComponent(imu,"MPU6050");
   Serial.println("Calculating offsets, do not move the board...");
   delay(1000);
-  IMU.calcOffsets();
+  imu.calcOffsets();
   Serial.println("Calculation complete. MPU6050 initialised successfully.");
 
   //Set up BMP180
   Wire.begin();
-  StartComponent(BMP_ID);
-  barometer.resetToDefaults();
-  barometer.setSamplingMode(BMP180MI::MODE_UHR);
+  StartComponent(bmp,"BMP180");
+  bmp.resetToDefaults();
+  bmp.setSamplingMode(BMP180MI::MODE_UHR);
   Serial.println("BMP180 initialised successfully.");
 }
 

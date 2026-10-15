@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 
+void StartComponent(auto,String);
 void SetupBoardSensors();
 void SensorTestCycle();
 

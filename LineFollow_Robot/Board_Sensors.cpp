@@ -15,7 +15,7 @@ MPU6050 imu(Wire);
 //TinyGPSPlus gps;
 
 //Bools to check if things are active???
-//Variables for measurements
+//Variables for measurements - all unused ik i should do smth abt that
 float temp;
 float pressure;
 float velocity;
@@ -32,6 +32,13 @@ float accelAngY;
 float accelAngZ;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
+
+//Add publicly callable methods to get specific vals?
+//ie. air pressure or temp so robot_sensors.cpp can calculate speed of sound
+//ohhhh right speed of sound, thats how i got into this 3-hour rabbit hole where i
+//wanted to optimise a completely unecessary thing
+//i probably should do that...
+//ah well, future me problem
 
 void UseBMP() {
   //Get and print the temperature

@@ -21,6 +21,13 @@ struct BoardTelemetry {
 };
 extern BoardTelemetry telemetry;
 
+//Bools to know if things are active
+extern bool serialIsActive = false;
+extern bool bmpIsActive = false;
+extern bool imuIsActive = false;
+extern bool gpsIsActive = false;
+extern bool radioIsActive = false;
+
 void SetupBoardSensors();
 void SensorTestCycle();
 

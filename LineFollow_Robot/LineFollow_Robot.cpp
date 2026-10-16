@@ -35,6 +35,7 @@ void setup() {
   Serial.print("Tried ");
   Serial.print(serialCount);
   Serial.println(" times");
+  serialIsActive = true;
 
   SetupWheels();
   SetupBoardSensors();

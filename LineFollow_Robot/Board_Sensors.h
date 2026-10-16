@@ -28,6 +28,7 @@ extern bool imuIsActive = false;
 extern bool gpsIsActive = false;
 extern bool radioIsActive = false;
 
+bool StartComponent(auto &component, const String &componentName);
 void SetupBoardSensors();
 void SensorTestCycle();
 

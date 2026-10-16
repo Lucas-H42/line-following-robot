@@ -21,13 +21,6 @@ BoardTelemetry telemetry;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
-//Add publicly callable methods to get specific vals?
-//ie. air pressure or temp so robot_sensors.cpp can calculate speed of sound
-//ohhhh right speed of sound, thats how i got into this 3-hour rabbit hole where i
-//wanted to optimise a completely unecessary thing
-//i probably should do that...
-//ah well, future me problem
-
 float calcAltitude(float pressurePa) {
   float hPa = 0;
   float altitudeFeet = 0;
@@ -119,11 +112,11 @@ void DisplayData() {
 bool IsComponentReady(auto &component) {
   return component.begin();
 }
-// Serial is set up in LineFollow_Robot.cpp, so not needed here
-// bool IsComponentReady(HardwareSerial &component) {
-//   component.begin(115200);
-//   return component;
-// }
+// Override for when ComponentSetup is called with Serial
+bool IsComponentReady(HardwareSerial &component) {
+  component.begin(115200);
+  return component;
+}
 // Leave SoftwareSerial off for now, cause do I really need the gps? (Also it clashes with C++20)
 // bool IsComponentReady(SoftwareSerial &component) {
 //   component.begin(9600);

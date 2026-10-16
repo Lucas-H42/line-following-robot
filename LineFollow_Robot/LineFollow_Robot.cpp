@@ -4,7 +4,7 @@
 #include "Robot_Sensors.h"
 #include "Board_Sensors.h"
 
-constexpr int TEST_DELAY = 50;
+constexpr int SERIAL_BAUD = 115200;
 constexpr int LOOP_DELAY = 1000;
 
 /* 
@@ -25,17 +25,10 @@ void setup() {
   */
 
   //Setup Serial communication
-  Serial.begin(115200);
-  int serialCount = 1;
-  while (!Serial) {
-    delay(TEST_DELAY);
-    serialCount++;
-  }
-  Serial.println("Board OKAY");
-  Serial.print("Tried ");
-  Serial.print(serialCount);
-  Serial.println(" times");
-  serialIsActive = true;
+  if (StartComponent(Serial, "Serial"))
+  { serialIsActive = true; }
+  else //Otherwise nuke it (gently)
+  { serialIsActive = false; }
 
   SetupWheels();
   SetupBoardSensors();

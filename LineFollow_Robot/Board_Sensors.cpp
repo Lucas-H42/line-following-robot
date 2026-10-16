@@ -19,12 +19,6 @@ MPU6050 IMU(Wire);
 
 //The struct for telemetry data
 BoardTelemetry telemetry;
-//Set the activity bools to default off (cause nothing's been initialised yet)
-bool serialIsActive = false;
-bool bmpIsActive = false;
-bool imuIsActive = false;
-bool gpsIsActive = false;
-bool radioIsActive = false;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
@@ -71,7 +65,7 @@ void TransmitData() {
 
 }
 void DisplayData() {
-  if (bmpIsActive) {
+  if (telemetry.isActive.bmp) {
     //Print the BMP data (recorded and calculated)
     Serial.print("Temperature(degC)(BMP180):");
     Serial.print(telemetry.bmp.temp);
@@ -84,7 +78,7 @@ void DisplayData() {
     Serial.print(",");
   }
 
-  if (imuIsActive) {
+  if (telemetry.isActive.imu) {
     //Print the IMU data
     Serial.print("Temperature(degC)(MPU5060):");
     Serial.print(telemetry.imu.temp);
@@ -109,7 +103,7 @@ void DisplayData() {
     Serial.print(",");
   }
 
-  if (gpsIsActive) {
+  if (telemetry.isActive.gps) {
 
   }
 }
@@ -168,7 +162,7 @@ void SetupBoardSensors() {
     delay(1000);
     IMU.calcOffsets();
     Serial.println("Calculation complete. MPU6050 initialised successfully.");
-    imuIsActive = true;
+    telemetry.isActive.imu = true;
   }
 
   //Set up BMP180
@@ -177,7 +171,7 @@ void SetupBoardSensors() {
     BMP.resetToDefaults();
     BMP.setSamplingMode(BMP180MI::MODE_UHR);
     Serial.println("BMP180 initialised successfully.");
-    bmpIsActive = true;
+    telemetry.isActive.bmp = true;
   }
 }
 

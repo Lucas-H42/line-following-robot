@@ -30,21 +30,21 @@ struct GPSData {
 struct RF24Data {
     //stuff here ig
 };
+struct ActiveStatus {
+    bool serial = false;
+    bool bmp = false;
+    bool imu = false;
+    bool gps = false;
+    bool radio = false;
+};
 struct BoardTelemetry {
     BMP180Data bmp;
     MPU6050Data imu;
     GPSData gps;
     RF24Data radio;
-
+    ActiveStatus isActive;
 };
 extern BoardTelemetry telemetry;
-
-//Bools to know if things are active
-extern bool serialIsActive;
-extern bool bmpIsActive;
-extern bool imuIsActive;
-extern bool gpsIsActive;
-extern bool radioIsActive;
 
 bool StartComponent(auto &component, const String &componentName);
 void SetupBoardSensors();

@@ -25,9 +25,9 @@ void setup() {
 
   //Setup Serial communication
   if (StartComponent(Serial, "Serial"))
-  { serialIsActive = true; }
+  { telemetry.isActive.serial = true; }
   else //Otherwise nuke it (gently)
-  { serialIsActive = false; }
+  { telemetry.isActive.serial = false; }
 
   SetupWheels();
   SetupBoardSensors();

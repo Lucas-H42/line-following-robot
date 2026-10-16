@@ -1,99 +1,134 @@
 //The libraries for sensor and transmitter components
 #include <Arduino.h>
-#include <TinyGPSPlus.h>
 #include <MPU6050_light.h>
 #include <BMP180I2C.h>
 #include <RF24.h>
-#include "Wire.h"
+#include <TinyGPSPlus.h>
+#include <Wire.h>
+#include "Board_Sensors.h"
 
-const int TEST_DELAY = 50;
+constexpr int TEST_DELAY = 50;
+constexpr int MAX_TEST = 100;
 
 //Create component objects
-BMP180I2C barometer(0x77);
+BMP180I2C BMP(0x77);
 MPU6050 IMU(Wire);
-//SoftwareSerial gpsSerial(PA1, PA0);
-//TingGPSPlus gps;
+//SoftwareSerial GPSSerial(PA1, PA0);
+//TinyGPSPlus GPS;
 
-//Constant variables
-const String BMP_ID = "BMP180";
-const String MPU_ID = "MPU6050";
-const String GPS_ID = "TinyGPS";
-const String RADIO_ID = "RF24";
-//Variables for measurements
-float temp;
-float pressure;
-float velocity;
-float altitude;
-float compassBearing;
-float angleX;
-float angleY;
-float angleZ;
-float accelX;
-float accelY;
-float accelZ;
-float accelAngX;
-float accelAngY;
-float accelAngZ;
+//The struct for telemetry data
+BoardTelemetry telemetry;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
-//Check if the component of the appropriate name has started
-bool IsComponentReady(String componentName) {
-  if (componentName == MPU_ID && IMU.begin()) {
-    return true;
-  }
-  else if (componentName == BMP_ID && barometer.begin()) {
-    return true;
-  }
-  /*else if (componentName == GPS_ID && ) {
-    return true;
-  }
-  else if (componentName == RADIO_ID && ) {
-    return true;
-  }*/
-  else {
-    return false;
-  }
-}
-
-void UseBMP() {
-  //Get and print the temperature
-  Serial.print("Temperature(degC):");
-	temp = barometer.readTemperature();
-  Serial.print(temp);
-  Serial.print(",");
-
-  //Get and print the pressure
-  Serial.print("Pressure(hPa):");
-  pressure = barometer.readPressure() / 100;
-  Serial.print(pressure);
-  Serial.print(",");
-}
-
-void UseMPU() {
-
-}
-
-void TransmitData() {
-  
-}
-
-float calcAltitude(int pressurePa) {
+float calcAltitude(float pressurePa) {
   float hPa = 0;
   float altitudeFeet = 0;
   float altitudeMeters = 0;
   hPa = 0.01 * pressurePa;
-  altitudeFeet = ((1 - pow((hPa / 1013.25), 0.190284)) * 145366.45);
+  altitudeFeet = (1 - pow(hPa / 1013.25, 0.190284)) * 145366.45;
   altitudeMeters = 0.3048 * altitudeFeet;
-  return(altitudeMeters);
+  return altitudeMeters;
 }
 
-//To start a component, name component
-void StartComponent(String component) {
+void UseBMP() {
+  //Get the temperature
+	telemetry.bmp.temp = BMP.readTemperature();
+  //Get the pressure
+  telemetry.bmp.pressure = BMP.readPressure() / 100;
+  //Calculate the altitude
+  telemetry.bmp.altitude = calcAltitude(telemetry.bmp.pressure);
+}
+void UseIMU() {
+  IMU.update();
+
+  telemetry.imu.temp = IMU.getTemp();
+
+  telemetry.imu.angleX = IMU.getAngleX();
+  telemetry.imu.angleY = IMU.getAngleY();
+  telemetry.imu.angleZ = IMU.getAngleZ();
+
+  telemetry.imu.accelX = IMU.getAccX();
+  telemetry.imu.accelY = IMU.getAccY();
+  telemetry.imu.accelZ = IMU.getAccZ();
+
+  telemetry.imu.accelAngX = IMU.getGyroX();
+  telemetry.imu.accelAngY = IMU.getGyroY();
+  telemetry.imu.accelAngZ = IMU.getGyroZ();
+}
+void UseGPS() {
+
+}
+
+void TransmitData() {
+
+}
+void DisplayData() {
+  if (telemetry.bmp.isActive) {
+    //Print the BMP data (recorded and calculated)
+    Serial.print("Temperature(degC)(BMP180):");
+    Serial.print(telemetry.bmp.temp);
+    Serial.print(",");
+    Serial.print("Pressure(hPa):");
+    Serial.print(telemetry.bmp.pressure);
+    Serial.print(",");
+    Serial.print("Altitude(m):");
+    Serial.print(telemetry.bmp.altitude);
+    Serial.print(",");
+  }
+
+  if (telemetry.imu.isActive) {
+    //Print the IMU data
+    Serial.print("Temperature(degC)(MPU5060):");
+    Serial.print(telemetry.imu.temp);
+    Serial.print(",");
+    Serial.print("X Acceleration(m/s^2):");
+    Serial.print(telemetry.imu.accelX);
+    Serial.print(",");
+    Serial.print("Y Acceleration(m/s^2):");
+    Serial.print(telemetry.imu.accelY);
+    Serial.print(",");
+    Serial.print("Z Acceleration(m/s^2):");
+    Serial.print(telemetry.imu.accelZ);
+    Serial.print(",");
+    Serial.print("X Angle/Pitch(deg):");
+    Serial.print(telemetry.imu.angleX);
+    Serial.print(",");
+    Serial.print("Y Angle/Roll(deg):");
+    Serial.print(telemetry.imu.angleY);
+    Serial.print(",");
+    Serial.print("Z Angle/Yaw(deg):");
+    Serial.print(telemetry.imu.angleZ);
+    Serial.print(",");
+  }
+
+  if (telemetry.gps.isActive) {
+
+  }
+}
+
+
+//Check if the component has started (automatically chooses which setup to use)
+bool IsComponentReady(auto &component) {
+  return component.begin();
+}
+// Override for when ComponentSetup is called with Serial
+bool IsComponentReady(HardwareSerial &component) {
+  component.begin(telemetry.serial.BAUD);
+  return component;
+}
+// Leave SoftwareSerial off for now, cause do I really need the gps? (Also it clashes with C++20)
+// bool IsComponentReady(SoftwareSerial &component) {
+//   component.begin(9600);
+//   return true;
+// }
+
+//To start a component, pass it and its name
+bool StartComponent(auto &component, const String &componentName) {
   //Try test for the first time
   int counter = 1;
   Serial.print("Attempting to start ");
-  Serial.println(component);
+  Serial.println(componentName);
   //If it's not ready
   while (!IsComponentReady(component)) {
     //Test repeatedly, showing an error every 100 tries
@@ -102,38 +137,55 @@ void StartComponent(String component) {
       Serial.print(counter);
       Serial.println(" times");
     }
+    if (counter >= MAX_TEST) { //If it fails too main times, cancel
+      Serial.print("Failed to start ");
+      Serial.println(componentName);
+      return false;
+    }
     delay(TEST_DELAY);
     counter++;
   }
   //When it's ready, show success
-  Serial.print(component);
+  Serial.print(componentName);
   Serial.print(" ready. ");
   Serial.print("Tried ");
   Serial.print(counter);
   Serial.println(" time(s).");
+  return true;
 }
 
 void SetupBoardSensors() {
   //Set up MPU6050
-  StartComponent(MPU_ID);
-  Serial.println("Calculating offsets, do not move the board...");
-  delay(1000);
-  IMU.calcOffsets();
-  Serial.println("Calculation complete. MPU6050 initialised successfully.");
+  if (StartComponent(IMU,"MPU6050")) {
+    Serial.println("Calculating offsets, do not move the board...");
+    delay(1000);
+    IMU.calcOffsets();
+    Serial.println("Calculation complete. MPU6050 initialised successfully.");
+    telemetry.imu.isActive = true;
+  }
 
   //Set up BMP180
   Wire.begin();
-  StartComponent(BMP_ID);
-  barometer.resetToDefaults();
-  barometer.setSamplingMode(BMP180MI::MODE_UHR);
-  Serial.println("BMP180 initialised successfully.");
+  if (StartComponent(BMP,"BMP180")) {
+    BMP.resetToDefaults();
+    BMP.setSamplingMode(BMP180MI::MODE_UHR);
+    Serial.println("BMP180 initialised successfully.");
+    telemetry.bmp.isActive = true;
+  }
 }
 
 void SensorTestCycle() {
-  Serial.println("Testing cycle: ");
-  UseBMP();
-  //UseMPU();
-  //UseGPS();
-  //TransmitData();
-  Serial.println();
+  if (telemetry.bmp.isActive) {}
+  { UseBMP(); }
+  if (telemetry.imu.isActive) {}
+  { UseIMU(); }
+  if (telemetry.gps.isActive) {}
+  { UseGPS(); }
+  if (telemetry.radio.isActive) {}
+  { TransmitData(); }
+  if (telemetry.serial.isActive) {
+    Serial.println("Testing cycle: ");
+    DisplayData();
+    Serial.println();
+  }
 }

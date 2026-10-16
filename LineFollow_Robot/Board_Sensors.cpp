@@ -9,6 +9,7 @@
 
 constexpr int TEST_DELAY = 50;
 constexpr int MAX_TEST = 100;
+constexpr int SERIAL_BAUD = 115200;
 
 //Create component objects
 BMP180I2C bmp(0x77);
@@ -18,6 +19,12 @@ MPU6050 imu(Wire);
 
 //The struct for telemetry data
 BoardTelemetry telemetry;
+//Set the activity bools to default off (cause nothing's been initialised yet)
+bool serialIsActive = false;
+bool bmpIsActive = false;
+bool imuIsActive = false;
+bool gpsIsActive = false;
+bool radioIsActive = false;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
@@ -33,28 +40,28 @@ float calcAltitude(float pressurePa) {
 
 void UseBMP() {
   //Get the temperature
-	telemetry.bmpTemp = bmp.readTemperature();
+	telemetry.bmp.temp = bmp.readTemperature();
   //Get the pressure
-  telemetry.pressure = bmp.readPressure() / 100;
+  telemetry.bmp.pressure = bmp.readPressure() / 100;
   //Calculate the altitude
-  telemetry.altitude = calcAltitude(telemetry.pressure);
+  telemetry.bmp.altitude = calcAltitude(telemetry.bmp.pressure);
 }
 void UseIMU() {
   imu.update();
 
-  telemetry.mpuTemp = imu.getTemp();
+  telemetry.imu.temp = imu.getTemp();
 
-  telemetry.angleX = imu.getAngleX();
-  telemetry.angleY = imu.getAngleY();
-  telemetry.angleZ = imu.getAngleZ();
+  telemetry.imu.angleX = imu.getAngleX();
+  telemetry.imu.angleY = imu.getAngleY();
+  telemetry.imu.angleZ = imu.getAngleZ();
 
-  telemetry.accelX = imu.getAccX();
-  telemetry.accelY = imu.getAccY();
-  telemetry.accelZ = imu.getAccZ();
+  telemetry.imu.accelX = imu.getAccX();
+  telemetry.imu.accelY = imu.getAccY();
+  telemetry.imu.accelZ = imu.getAccZ();
 
-  telemetry.accelAngX = imu.getGyroX();
-  telemetry.accelAngY = imu.getGyroY();
-  telemetry.accelAngZ = imu.getGyroZ();
+  telemetry.imu.accelAngX = imu.getGyroX();
+  telemetry.imu.accelAngY = imu.getGyroY();
+  telemetry.imu.accelAngZ = imu.getGyroZ();
 }
 void UseGPS() {
 
@@ -67,38 +74,38 @@ void DisplayData() {
   if (bmpIsActive) {
     //Print the BMP data (recorded and calculated)
     Serial.print("Temperature(degC)(BMP180):");
-    Serial.print(telemetry.bmpTemp);
+    Serial.print(telemetry.bmp.temp);
     Serial.print(",");
     Serial.print("Pressure(hPa):");
-    Serial.print(telemetry.pressure);
+    Serial.print(telemetry.bmp.pressure);
     Serial.print(",");
     Serial.print("Altitude(m):");
-    Serial.print(telemetry.altitude);
+    Serial.print(telemetry.bmp.altitude);
     Serial.print(",");
   }
 
   if (imuIsActive) {
     //Print the IMU data
     Serial.print("Temperature(degC)(MPU5060):");
-    Serial.print(telemetry.mpuTemp);
+    Serial.print(telemetry.imu.temp);
     Serial.print(",");
     Serial.print("X Acceleration(m/s^2):");
-    Serial.print(telemetry.accelX);
+    Serial.print(telemetry.imu.accelX);
     Serial.print(",");
     Serial.print("Y Acceleration(m/s^2):");
-    Serial.print(telemetry.accelY);
+    Serial.print(telemetry.imu.accelY);
     Serial.print(",");
     Serial.print("Z Acceleration(m/s^2):");
-    Serial.print(telemetry.accelZ);
+    Serial.print(telemetry.imu.accelZ);
     Serial.print(",");
     Serial.print("X Angle/Pitch(deg):");
-    Serial.print(telemetry.angleX);
+    Serial.print(telemetry.imu.angleX);
     Serial.print(",");
     Serial.print("Y Angle/Roll(deg):");
-    Serial.print(telemetry.angleY);
+    Serial.print(telemetry.imu.angleY);
     Serial.print(",");
     Serial.print("Z Angle/Yaw(deg):");
-    Serial.print(telemetry.angleZ);
+    Serial.print(telemetry.imu.angleZ);
     Serial.print(",");
   }
 
@@ -114,7 +121,7 @@ bool IsComponentReady(auto &component) {
 }
 // Override for when ComponentSetup is called with Serial
 bool IsComponentReady(HardwareSerial &component) {
-  component.begin(115200);
+  component.begin(SERIAL_BAUD);
   return component;
 }
 // Leave SoftwareSerial off for now, cause do I really need the gps? (Also it clashes with C++20)

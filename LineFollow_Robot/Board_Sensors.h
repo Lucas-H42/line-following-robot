@@ -4,11 +4,13 @@
 
 #include <Arduino.h>
 
-struct BoardTelemetry {
-    float bmpTemp;
+struct BMP180Data {
+    float temp;
     float pressure;
     float altitude;
-    float mpuTemp;
+};
+struct MPU6050Data {
+    float temp;
     float angleX;
     float angleY;
     float angleZ;
@@ -19,14 +21,30 @@ struct BoardTelemetry {
     float accelAngY;
     float accelAngZ;
 };
+struct GPSData {
+    float latitude;
+    float longitude;
+    //other things here
+    float altitude;
+};
+struct RF24Data {
+    //stuff here ig
+};
+struct BoardTelemetry {
+    BMP180Data bmp;
+    MPU6050Data imu;
+    GPSData gps;
+    RF24Data radio;
+
+};
 extern BoardTelemetry telemetry;
 
 //Bools to know if things are active
-extern bool serialIsActive = false;
-extern bool bmpIsActive = false;
-extern bool imuIsActive = false;
-extern bool gpsIsActive = false;
-extern bool radioIsActive = false;
+extern bool serialIsActive;
+extern bool bmpIsActive;
+extern bool imuIsActive;
+extern bool gpsIsActive;
+extern bool radioIsActive;
 
 bool StartComponent(auto &component, const String &componentName);
 void SetupBoardSensors();

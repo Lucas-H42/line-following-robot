@@ -4,7 +4,6 @@
 #include "Robot_Sensors.h"
 #include "Board_Sensors.h"
 
-constexpr int SERIAL_BAUD = 115200;
 constexpr int LOOP_DELAY = 1000;
 
 /* 

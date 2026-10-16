@@ -4,19 +4,22 @@
 
 #include <Arduino.h>
 
-extern float bmpTemp;
-extern float pressure;
-extern float altitude;
-extern float mpuTemp;
-extern float angleX;
-extern float angleY;
-extern float angleZ;
-extern float accelX;
-extern float accelY;
-extern float accelZ;
-extern float accelAngX;
-extern float accelAngY;
-extern float accelAngZ;
+struct BoardTelemetry {
+    float bmpTemp;
+    float pressure;
+    float altitude;
+    float mpuTemp;
+    float angleX;
+    float angleY;
+    float angleZ;
+    float accelX;
+    float accelY;
+    float accelZ;
+    float accelAngX;
+    float accelAngY;
+    float accelAngZ;
+};
+extern BoardTelemetry telemetry;
 
 void SetupBoardSensors();
 void SensorTestCycle();

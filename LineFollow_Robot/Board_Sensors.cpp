@@ -16,20 +16,8 @@ MPU6050 imu(Wire);
 //TinyGPSPlus gps;
 
 //Bools to check if things are active???
-//Variables for measurements - all unused ik i should do smth abt that
-float bmpTemp;
-float pressure;
-float altitude;
-float mpuTemp;
-float angleX;
-float angleY;
-float angleZ;
-float accelX;
-float accelY;
-float accelZ;
-float accelAngX;
-float accelAngY;
-float accelAngZ;
+//The struct for telemetry data
+BoardTelemetry telemetry;
 
 //A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
@@ -53,27 +41,27 @@ float calcAltitude(float pressurePa) {
 void UseBMP() {
   //Get and print the temperature
   Serial.print("Temperature(degC):");
-	bmpTemp = bmp.readTemperature();
-  Serial.print(bmpTemp);
+	telemetry.bmpTemp = bmp.readTemperature();
+  Serial.print(telemetry.bmpTemp);
   Serial.print(",");
 
   //Get and print the pressure
   Serial.print("Pressure(hPa):");
-  pressure = bmp.readPressure() / 100;
-  Serial.print(pressure);
+  telemetry.pressure = bmp.readPressure() / 100;
+  Serial.print(telemetry.pressure);
   Serial.print(",");
 
   //Get and print the altitude
   Serial.print("Altitude(m):");
-  altitude = calcAltitude(pressure);
-  Serial.print(altitude);
+  telemetry.altitude = calcAltitude(telemetry.pressure);
+  Serial.print(telemetry.altitude);
   Serial.print(",");
 }
 
 void UseIMU() {
   imu.update();
 
-  mpuTemp = imu.getTemp();
+  telemetry.mpuTemp = imu.getTemp();
 
 }
 

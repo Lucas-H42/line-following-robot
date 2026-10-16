@@ -12,10 +12,10 @@ constexpr int MAX_TEST = 100;
 constexpr int SERIAL_BAUD = 115200;
 
 //Create component objects
-BMP180I2C bmp(0x77);
-MPU6050 imu(Wire);
-//SoftwareSerial gpsSerial(PA1, PA0);
-//TinyGPSPlus gps;
+BMP180I2C BMP(0x77);
+MPU6050 IMU(Wire);
+//SoftwareSerial GPSSerial(PA1, PA0);
+//TinyGPSPlus GPS;
 
 //The struct for telemetry data
 BoardTelemetry telemetry;
@@ -40,28 +40,28 @@ float calcAltitude(float pressurePa) {
 
 void UseBMP() {
   //Get the temperature
-	telemetry.bmp.temp = bmp.readTemperature();
+	telemetry.bmp.temp = BMP.readTemperature();
   //Get the pressure
-  telemetry.bmp.pressure = bmp.readPressure() / 100;
+  telemetry.bmp.pressure = BMP.readPressure() / 100;
   //Calculate the altitude
   telemetry.bmp.altitude = calcAltitude(telemetry.bmp.pressure);
 }
 void UseIMU() {
-  imu.update();
+  IMU.update();
 
-  telemetry.imu.temp = imu.getTemp();
+  telemetry.imu.temp = IMU.getTemp();
 
-  telemetry.imu.angleX = imu.getAngleX();
-  telemetry.imu.angleY = imu.getAngleY();
-  telemetry.imu.angleZ = imu.getAngleZ();
+  telemetry.imu.angleX = IMU.getAngleX();
+  telemetry.imu.angleY = IMU.getAngleY();
+  telemetry.imu.angleZ = IMU.getAngleZ();
 
-  telemetry.imu.accelX = imu.getAccX();
-  telemetry.imu.accelY = imu.getAccY();
-  telemetry.imu.accelZ = imu.getAccZ();
+  telemetry.imu.accelX = IMU.getAccX();
+  telemetry.imu.accelY = IMU.getAccY();
+  telemetry.imu.accelZ = IMU.getAccZ();
 
-  telemetry.imu.accelAngX = imu.getGyroX();
-  telemetry.imu.accelAngY = imu.getGyroY();
-  telemetry.imu.accelAngZ = imu.getGyroZ();
+  telemetry.imu.accelAngX = IMU.getGyroX();
+  telemetry.imu.accelAngY = IMU.getGyroY();
+  telemetry.imu.accelAngZ = IMU.getGyroZ();
 }
 void UseGPS() {
 
@@ -163,19 +163,19 @@ bool StartComponent(auto &component, const String &componentName) {
 
 void SetupBoardSensors() {
   //Set up MPU6050
-  if (StartComponent(imu,"MPU6050")) {
+  if (StartComponent(IMU,"MPU6050")) {
     Serial.println("Calculating offsets, do not move the board...");
     delay(1000);
-    imu.calcOffsets();
+    IMU.calcOffsets();
     Serial.println("Calculation complete. MPU6050 initialised successfully.");
     imuIsActive = true;
   }
 
   //Set up BMP180
   Wire.begin();
-  if (StartComponent(bmp,"BMP180")) {
-    bmp.resetToDefaults();
-    bmp.setSamplingMode(BMP180MI::MODE_UHR);
+  if (StartComponent(BMP,"BMP180")) {
+    BMP.resetToDefaults();
+    BMP.setSamplingMode(BMP180MI::MODE_UHR);
     Serial.println("BMP180 initialised successfully.");
     bmpIsActive = true;
   }

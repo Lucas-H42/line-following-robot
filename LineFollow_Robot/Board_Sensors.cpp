@@ -9,7 +9,6 @@
 
 constexpr int TEST_DELAY = 50;
 constexpr int MAX_TEST = 100;
-constexpr int SERIAL_BAUD = 115200;
 
 //Create component objects
 BMP180I2C BMP(0x77);
@@ -65,7 +64,7 @@ void TransmitData() {
 
 }
 void DisplayData() {
-  if (telemetry.isActive.bmp) {
+  if (telemetry.bmp.isActive) {
     //Print the BMP data (recorded and calculated)
     Serial.print("Temperature(degC)(BMP180):");
     Serial.print(telemetry.bmp.temp);
@@ -78,7 +77,7 @@ void DisplayData() {
     Serial.print(",");
   }
 
-  if (telemetry.isActive.imu) {
+  if (telemetry.imu.isActive) {
     //Print the IMU data
     Serial.print("Temperature(degC)(MPU5060):");
     Serial.print(telemetry.imu.temp);
@@ -103,7 +102,7 @@ void DisplayData() {
     Serial.print(",");
   }
 
-  if (telemetry.isActive.gps) {
+  if (telemetry.gps.isActive) {
 
   }
 }
@@ -115,7 +114,7 @@ bool IsComponentReady(auto &component) {
 }
 // Override for when ComponentSetup is called with Serial
 bool IsComponentReady(HardwareSerial &component) {
-  component.begin(SERIAL_BAUD);
+  component.begin(telemetry.serial.BAUD);
   return component;
 }
 // Leave SoftwareSerial off for now, cause do I really need the gps? (Also it clashes with C++20)
@@ -162,7 +161,7 @@ void SetupBoardSensors() {
     delay(1000);
     IMU.calcOffsets();
     Serial.println("Calculation complete. MPU6050 initialised successfully.");
-    telemetry.isActive.imu = true;
+    telemetry.imu.isActive = true;
   }
 
   //Set up BMP180
@@ -171,20 +170,20 @@ void SetupBoardSensors() {
     BMP.resetToDefaults();
     BMP.setSamplingMode(BMP180MI::MODE_UHR);
     Serial.println("BMP180 initialised successfully.");
-    telemetry.isActive.bmp = true;
+    telemetry.bmp.isActive = true;
   }
 }
 
 void SensorTestCycle() {
-  if (telemetry.isActive.bmp) {}
+  if (telemetry.bmp.isActive) {}
   { UseBMP(); }
-  if (telemetry.isActive.imu) {}
+  if (telemetry.imu.isActive) {}
   { UseIMU(); }
-  if (telemetry.isActive.gps) {}
+  if (telemetry.gps.isActive) {}
   { UseGPS(); }
-  if (telemetry.isActive.radio) {}
+  if (telemetry.radio.isActive) {}
   { TransmitData(); }
-  if (telemetry.isActive.serial) {
+  if (telemetry.serial.isActive) {
     Serial.println("Testing cycle: ");
     DisplayData();
     Serial.println();

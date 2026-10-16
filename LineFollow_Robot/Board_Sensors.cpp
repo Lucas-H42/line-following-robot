@@ -176,15 +176,15 @@ void SetupBoardSensors() {
 }
 
 void SensorTestCycle() {
-  if (bmpIsActive)
+  if (telemetry.isActive.bmp) {}
   { UseBMP(); }
-  if (imuIsActive)
+  if (telemetry.isActive.imu) {}
   { UseIMU(); }
-  if (gpsIsActive)
+  if (telemetry.isActive.gps) {}
   { UseGPS(); }
-  if (radioIsActive)
+  if (telemetry.isActive.radio) {}
   { TransmitData(); }
-  if (serialIsActive) {
+  if (telemetry.isActive.serial) {
     Serial.println("Testing cycle: ");
     DisplayData();
     Serial.println();

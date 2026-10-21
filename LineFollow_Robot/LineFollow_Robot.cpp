@@ -3,6 +3,8 @@
 #include "Wheel_Control.h"
 #include "Robot_Sensors.h"
 #include "Board_Sensors.h"
+#include <SD.h>
+#include <SPI.h>
 
 const int TEST_DELAY = 50;
 const int LOOP_DELAY = 1000;

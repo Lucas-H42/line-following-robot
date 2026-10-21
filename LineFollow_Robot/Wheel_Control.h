@@ -4,6 +4,6 @@
 #include <Arduino.h>
 
 void SetupWheels();
-void SetMovement(int, int);
+void SetMovement(int lWheel, int rWheel);
 
 #endif

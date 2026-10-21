@@ -7,11 +7,10 @@
 #define L_SPEED PC6
 #define R_SPEED PC7
 //NOTE: R WHEEL BLUE WIRE NEEDS RE-SOLDERING
-//ADD wires from pins defined above to ENA and ENB
 
-const int MAX_SPEED = 255;
-const float WHEEL_MAX = 100;
-const float WHEEL_MIN = -1 * WHEEL_MAX;
+constexpr int MAX_SPEED = 255;
+constexpr float WHEEL_MAX = 100;
+constexpr float WHEEL_MIN = -1 * WHEEL_MAX;
 
 void SetupWheels() {
   pinMode(L_FORWARD, OUTPUT);
@@ -25,7 +24,7 @@ void SetupWheels() {
   digitalWrite(R_BACK, LOW);
 }
 
-void SetMovement(int lWheel, int rWheel) { //Values can be -100 to 100
+void SetMovement(int lWheel, int rWheel) { //Values can be -100 to 100, as a % of top speed
   if (lWheel > 0) {
     digitalWrite(L_BACK, LOW);
     digitalWrite(L_FORWARD, HIGH);

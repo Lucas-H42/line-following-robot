@@ -4,9 +4,9 @@
 #include <Arduino.h>
 
 void SetupRobotSensors();
-int GetLeftSensor();
-int GetCentreSensor();
-int GetRightSensor();
+int GetLeftLine();
+int GetCentreLine();
+int GetRightLine();
 void RunSteering();
 
 #endif

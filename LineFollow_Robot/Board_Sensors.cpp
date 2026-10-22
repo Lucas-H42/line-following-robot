@@ -16,10 +16,8 @@ MPU6050 IMU(Wire);
 //SoftwareSerial GPSSerial(PA1, PA0);
 //TinyGPSPlus GPS;
 
-//The struct for telemetry data
+//The ULTIMATE STRUCT for telemetry data (this is not Java, i promise)
 BoardTelemetry telemetry;
-
-//A METHOD CAN ONLY CALL OTHER METHODS ABOVE IT IN THE CODE
 
 float calcAltitude(float pressurePa) {
   float hPa = 0;
@@ -64,6 +62,8 @@ void TransmitData() {
 
 }
 void DisplayData() {
+  Serial.println("Testing cycle: ");
+
   if (telemetry.bmp.isActive) {
     //Print the BMP data (recorded and calculated)
     Serial.print("Temperature(degC)(BMP180):");
@@ -105,6 +105,10 @@ void DisplayData() {
   if (telemetry.gps.isActive) {
 
   }
+
+  if (!telemetry.bmp.isActive && !telemetry.imu.isActive && !telemetry.gps.isActive)
+  { Serial.print("NO VALID COMPONENTS ACTIVE"); }
+  Serial.println();
 }
 
 
@@ -175,17 +179,15 @@ void SetupBoardSensors() {
 }
 
 void SensorTestCycle() {
-  if (telemetry.bmp.isActive) {}
+  if (telemetry.bmp.isActive)
   { UseBMP(); }
-  if (telemetry.imu.isActive) {}
+  if (telemetry.imu.isActive)
   { UseIMU(); }
-  if (telemetry.gps.isActive) {}
+  if (telemetry.gps.isActive)
   { UseGPS(); }
-  if (telemetry.radio.isActive) {}
+  if (telemetry.radio.isActive)
   { TransmitData(); }
-  if (telemetry.serial.isActive) {
-    Serial.println("Testing cycle: ");
-    DisplayData();
-    Serial.println();
-  }
+
+  if (telemetry.serial.isActive)
+  { DisplayData(); }
 }

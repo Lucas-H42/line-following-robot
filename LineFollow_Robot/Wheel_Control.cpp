@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "Wheel_Control.h"
 
 #define L_FORWARD PB4
 #define L_BACK PB5
@@ -17,11 +17,10 @@ void SetupWheels() {
   pinMode(L_BACK, OUTPUT);
   pinMode(R_FORWARD, OUTPUT);
   pinMode(R_BACK, OUTPUT);
+  pinMode(L_SPEED, OUTPUT);
+  pinMode(R_SPEED, OUTPUT);
 
-  digitalWrite(L_FORWARD, LOW);
-  digitalWrite(L_BACK, LOW);
-  digitalWrite(R_FORWARD, LOW);
-  digitalWrite(R_BACK, LOW);
+  SetMovement(0, 0);
 }
 
 void SetMovement(int lWheel, int rWheel) { //Values can be -100 to 100, as a % of top speed

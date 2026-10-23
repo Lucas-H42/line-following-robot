@@ -29,12 +29,16 @@ int GetRightLine() {
 //The check and movement logic
 void RunSteering() {
   if (GetLeftLine() && !GetRightLine()) {
+    Serial.println("Steering LEFT");
     SetMovement(10,40); //If left is triggered, go left
   } else if (GetRightLine() & !GetLeftLine()) {
+    Serial.println("Steering RIGHT");
     SetMovement(40,10); //If right is triggered, go right
   } else if (GetCentreLine()) {
+    Serial.println("Steering CENTER");
     SetMovement(40,40); //If the centre sensor is on the line (and neither of the others happened), just keep going
   } else {
+    Serial.println("STATIONARY");
     SetMovement(0,0); //If anything else (nothing, or some weird unexpected combo), don't do anything
   }
 }

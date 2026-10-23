@@ -26,4 +26,4 @@ Then, to actually run the code (annoying, I know):
 2. After uploading your code, disconnect your board from your computer
 3. Disconnect the BOOT0 pin from the 3.3V pin
 4. Reconnect the board to your computer
-5. Under the Select Board menu, choose the option containing "usbmodem..." followed by a string of numbers
+5. Under the Select Board menu, choose the option containing "usbmodem..." followed by a string of numbers (mine is usbmodem3562325134341)

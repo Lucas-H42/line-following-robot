@@ -36,7 +36,7 @@ void SetMovement(int lWheel, int rWheel) { //Values can be -100 to 100, as a % o
   }
   int lPWM = abs(constrain(lWheel, WHEEL_MIN, WHEEL_MAX)) * MAX_SPEED/WHEEL_MAX;
   analogWrite(L_SPEED, lPWM);
-  Serial.print("LEFT speeed: ");
+  Serial.print("LEFT speed: ");
   Serial.print(lPWM);
 
   if (rWheel > 0) {
@@ -51,6 +51,7 @@ void SetMovement(int lWheel, int rWheel) { //Values can be -100 to 100, as a % o
   }
   int rPWM = abs(constrain(rWheel, WHEEL_MIN, WHEEL_MAX)) * MAX_SPEED/WHEEL_MAX;
   analogWrite(R_SPEED, rPWM);
-  Serial.print("\tRIGHT speeed: ");
+  Serial.print("\tRIGHT speed: ");
   Serial.print(rPWM);
+  Serial.println();
 }

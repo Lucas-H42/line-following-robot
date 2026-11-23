@@ -5,6 +5,8 @@
 #include "Board_Sensors.h"
 
 constexpr int LOOP_DELAY = 1000;
+constexpr int SENSOR_DELAY = 3000;
+static int timer = 0;
 
 /* 
 Notes for self later:
@@ -51,6 +53,7 @@ void loop() {
   */
 
   delay(LOOP_DELAY);
+  timer += LOOP_DELAY;
 
   //SensorTestCycle();
   Serial.print("LeftLight:");
@@ -65,4 +68,10 @@ void loop() {
   
   //RunSteering();
   SetMovement(1,1);
+
+  //Run the board sensors less often
+  if (timer >= SENSOR_DELAY) {
+    timer -= SENSOR_DELAY;
+    SensorTestCycle();
+  }
 }
